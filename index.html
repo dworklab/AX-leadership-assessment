@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AX 리더십 수준 진단</title>
+  <style>
+    :root {
+      --color-bg: #f4f4f5;
+      --color-surface: #ffffff;
+      --color-surface-2: #f1f5f9;
+      --color-border: rgba(0,0,0,0.08);
+      --color-accent: #0f172a;
+      --color-accent-2: #334155;
+      --color-accent-glow: rgba(0,0,0,0.12);
+      --color-text: #0f172a;
+      --color-text-muted: #475569;
+      --color-text-dim: #94a3b8;
+      --color-A: #0f172a;
+      --color-B: #334155;
+      --color-C: #64748b;
+      --color-D: #94a3b8;
+      --radius-lg: 16px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', 'Pretendard', system-ui, sans-serif;
+      background: var(--color-bg);
+      color: var(--color-text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    .app {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+    }
+
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* ── Intro ── */
+    .intro-hero {
+      text-align: center;
+      padding: 60px 0 40px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--color-accent), var(--color-accent-2));
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 100px;
+      margin-bottom: 24px;
+    }
+
+    .intro-hero h1 {
+      font-size: clamp(28px, 6vw, 48px);
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #0f172a 30%, #475569);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .intro-hero p {
+      font-size: 16px;
+      color: var(--color-text-muted);
+      max-width: 500px;
+      margin: 0 auto 40px;
+    }
+
+    .areas-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 40px;
+    }
+
+    .area-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .area-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px;
+      height: 100%;
+    }
+
+    .area-card.A::before { background: var(--color-A); }
+    .area-card.B::before { background: var(--color-B); }
+    .area-card.C::before { background: var(--color-C); }
+    .area-card.D::before { background: var(--color-D); }
+
+    .area-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+      opacity: 0.7;
+    }
+
+    .area-card.A .area-label { color: var(--color-A); }
+    .area-card.B .area-label { color: var(--color-B); }
+    .area-card.C .area-label { color: var(--color-C); }
+    .area-card.D .area-label { color: var(--color-D); }
+
+    .area-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: 4px;
+    }
+
+    .area-desc { font-size: 12px; color: var(--color-text-dim); }
+
+    .info-strip {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--color-text-muted);
+    }
+
+    .info-item svg { width: 16px; height: 16px; opacity: 0.6; }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--color-accent), var(--color-accent-2));
+      color: #fff;
+      border: none;
+      border-radius: 100px;
+      padding: 14px 36px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 24px var(--color-accent-glow);
+    }
+
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px var(--color-accent-glow); }
+    .btn-primary:active { transform: translateY(0); }
+
+    /* ── Progress ── */
+    .progress-wrap { margin-bottom: 32px; }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .progress-label { font-size: 13px; color: var(--color-text-muted); }
+    .progress-count { font-size: 13px; font-weight: 700; color: var(--color-text); }
+
+    .progress-bar {
+      height: 4px;
+      background: var(--color-surface-2);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--color-accent), var(--color-accent-2));
+      border-radius: 4px;
+      transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    /* ── Area tabs ── */
+    .area-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+
+    .area-tab {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid var(--color-border);
+      background: transparent;
+      color: var(--color-text-dim);
+      cursor: default;
+      transition: all 0.2s;
+    }
+
+    .area-tab.done {
+      border-color: rgba(0,0,0,0.12);
+      color: var(--color-accent);
+      background: rgba(0,0,0,0.04);
+    }
+
+    .area-tab.active { color: #fff; border-color: transparent; }
+    .area-tab.active.A { background: var(--color-A); }
+    .area-tab.active.B { background: var(--color-B); }
+    .area-tab.active.C { background: var(--color-C); }
+    .area-tab.active.D { background: var(--color-D); }
+
+    .area-tab .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    /* ── Questions ── */
+    .question-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 12px;
+      transition: border-color 0.2s;
+    }
+
+    .question-card.answered { border-color: rgba(0,0,0,0.1); }
+
+    .question-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--color-text-dim);
+      letter-spacing: 0.06em;
+      margin-bottom: 10px;
+    }
+
+    .question-text {
+      font-size: 15px;
+      color: var(--color-text);
+      margin-bottom: 20px;
+      line-height: 1.65;
+    }
+
+    .rating-row { display: flex; gap: 8px; }
+
+    .rating-btn {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      background: var(--color-surface-2);
+      border: 1.5px solid transparent;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.15s;
+      padding: 10px 4px;
+    }
+
+    .rating-btn:hover { border-color: rgba(0,0,0,0.2); background: rgba(0,0,0,0.04); }
+    .rating-btn.selected { border-color: rgba(0,0,0,0.3); background: rgba(0,0,0,0.06); }
+
+    .rating-num {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--color-text-muted);
+      line-height: 1;
+    }
+
+    .rating-btn.selected .rating-num { color: #0f172a; }
+
+    .rating-label {
+      font-size: 9px;
+      color: var(--color-text-dim);
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    .rating-btn.selected .rating-label { color: var(--color-text-muted); }
+
+    .rating-guide {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      padding: 0 2px;
+    }
+
+    .rating-guide span { font-size: 10px; color: var(--color-text-dim); }
+
+    /* ── Nav ── */
+    .nav-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 28px;
+    }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      border: 1px solid var(--color-border);
+      color: var(--color-text-muted);
+      border-radius: 100px;
+      padding: 10px 22px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-ghost:hover { border-color: rgba(0,0,0,0.15); color: var(--color-text); }
+    .btn-ghost:disabled { opacity: 0.3; cursor: not-allowed; }
+
+    .btn-next {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--color-accent), var(--color-accent-2));
+      color: #fff;
+      border: none;
+      border-radius: 100px;
+      padding: 12px 28px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+      box-shadow: 0 2px 16px var(--color-accent-glow);
+    }
+
+    .btn-next:hover { transform: translateY(-1px); box-shadow: 0 4px 24px var(--color-accent-glow); }
+    .btn-next:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .answer-hint { font-size: 12px; color: var(--color-text-dim); }
+
+    /* ── Result ── */
+    .result-hero { text-align: center; padding: 48px 0 32px; }
+
+    .result-stage {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      margin-bottom: 16px;
+    }
+
+    .result-character {
+      font-size: clamp(32px, 8vw, 56px);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #0f172a 30%, #475569);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .result-en { font-size: 16px; color: var(--color-text-dim); font-style: italic; margin-bottom: 20px; }
+
+    .score-display {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 4px;
+      margin-bottom: 24px;
+    }
+
+    .score-number {
+      font-size: 72px;
+      font-weight: 900;
+      line-height: 1;
+      background: linear-gradient(135deg, var(--color-accent), var(--color-accent-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .score-max { font-size: 24px; color: var(--color-text-dim); }
+
+    .result-desc {
+      font-size: 15px;
+      color: var(--color-text-muted);
+      max-width: 520px;
+      margin: 0 auto 40px;
+      line-height: 1.7;
+    }
+
+    /* ── Score range ── */
+    .score-range {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .score-range-label { font-size: 13px; color: var(--color-text-dim); margin-bottom: 16px; }
+
+    .range-bar {
+      height: 10px;
+      background: var(--color-surface-2);
+      border-radius: 100px;
+      position: relative;
+      margin-bottom: 8px;
+    }
+
+    .range-segments {
+      display: flex;
+      height: 100%;
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .range-seg { flex: 1; opacity: 0.2; transition: opacity 0.3s; }
+    .range-seg.active { opacity: 1; }
+    .range-seg.s1 { background: #0f172a; }
+    .range-seg.s2 { background: #334155; }
+    .range-seg.s3 { background: #64748b; }
+    .range-seg.s4 { background: #94a3b8; }
+
+    .range-marker {
+      position: absolute;
+      top: -4px;
+      width: 18px; height: 18px;
+      background: #0f172a;
+      border-radius: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      transition: left 0.8s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .range-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      color: var(--color-text-dim);
+      margin-top: 6px;
+    }
+
+    /* ── Area breakdown ── */
+    .area-breakdown {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .area-breakdown h3 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--color-text-muted);
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .area-row { margin-bottom: 16px; }
+    .area-row:last-child { margin-bottom: 0; }
+
+    .area-row-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .area-row-name { font-size: 13px; font-weight: 600; color: var(--color-text); }
+    .area-row-score { font-size: 13px; font-weight: 700; }
+
+    .area-bar {
+      height: 6px;
+      background: var(--color-surface-2);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .area-bar-fill {
+      height: 100%;
+      border-radius: 100px;
+      transition: width 1s cubic-bezier(0.4,0,0.2,1);
+      width: 0;
+    }
+
+    /* ── Stages grid ── */
+    .stages-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 32px;
+    }
+
+    .stage-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      opacity: 0.4;
+      transition: opacity 0.3s;
+    }
+
+    .stage-card.current {
+      opacity: 1;
+      border-color: rgba(0,0,0,0.15);
+      background: rgba(0,0,0,0.03);
+    }
+
+    .stage-num { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: var(--color-text-dim); margin-bottom: 6px; }
+    .stage-name { font-size: 15px; font-weight: 800; color: var(--color-text); margin-bottom: 4px; }
+    .stage-name-en { font-size: 11px; color: var(--color-text-dim); font-style: italic; margin-bottom: 8px; }
+
+    .stage-range {
+      font-size: 11px;
+      color: var(--color-text-dim);
+      background: var(--color-surface-2);
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 100px;
+    }
+
+    .stage-card.current .stage-range {
+      background: rgba(0,0,0,0.06);
+      color: var(--color-text-muted);
+    }
+
+    /* ── Radar ── */
+    .radar-wrap {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .radar-wrap h3 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--color-text-muted);
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .radar-svg-wrap { display: flex; justify-content: center; }
+
+    /* ── Actions ── */
+    .result-actions {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      border: 1.5px solid var(--color-border);
+      color: var(--color-text-muted);
+      border-radius: 100px;
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-outline:hover { border-color: rgba(0,0,0,0.2); color: var(--color-text); }
+
+    @media (max-width: 480px) {
+      .areas-grid { grid-template-columns: 1fr; }
+      .stages-grid { grid-template-columns: 1fr; }
+      .rating-label { display: none; }
+    }
+
+    @media print {
+      body { background: #fff; color: #000; }
+      .result-actions { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Intro -->
+  <div class="screen active" id="screen-intro">
+    <div class="intro-hero">
+      <div class="badge">Leadership Diagnostic</div>
+      <h1>AX 리더십<br>수준 진단</h1>
+      <p>AI 전환 시대, 나의 리더십은 어디에 있을까요?<br>4개 영역 20문항으로 진단합니다.</p>
+    </div>
+
+    <div class="areas-grid">
+      <div class="area-card A">
+        <div class="area-label">Area A</div>
+        <div class="area-title">AI 수용 마인드셋</div>
+        <div class="area-desc">변화를 받아들이는 자세와 학습 태도</div>
+      </div>
+      <div class="area-card B">
+        <div class="area-label">Area B</div>
+        <div class="area-title">AI 활용 실행 역량</div>
+        <div class="area-desc">실제 업무에서 AI를 활용하는 능력</div>
+      </div>
+      <div class="area-card C">
+        <div class="area-label">Area C</div>
+        <div class="area-title">팀 전환 촉진 리더십</div>
+        <div class="area-desc">팀의 AI 전환을 이끄는 리더십</div>
+      </div>
+      <div class="area-card D">
+        <div class="area-label">Area D</div>
+        <div class="area-title">AX 기반 성과 창출</div>
+        <div class="area-desc">AI를 통해 실질적 성과를 만드는 역량</div>
+      </div>
+    </div>
+
+    <div class="info-strip">
+      <div class="info-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+        </svg>
+        약 5~7분 소요
+      </div>
+      <div class="info-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+        </svg>
+        20개 문항
+      </div>
+      <div class="info-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        4단계 결과 제공
+      </div>
+    </div>
+
+    <div style="text-align:center;">
+      <button class="btn-primary" onclick="startDiag()">
+        진단 시작하기
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Quiz -->
+  <div class="screen" id="screen-quiz">
+    <div class="progress-wrap">
+      <div class="progress-header">
+        <span class="progress-label" id="prog-label"></span>
+        <span class="progress-count" id="prog-count">0 / 20</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="prog-fill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="area-tabs" id="area-tabs"></div>
+    <div id="questions-container"></div>
+
+    <div class="nav-row">
+      <button class="btn-ghost" id="btn-prev" onclick="prevSection()" disabled>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M19 12H5M12 5l-7 7 7 7"/>
+        </svg>
+        이전
+      </button>
+      <span class="answer-hint" id="answer-hint"></span>
+      <button class="btn-next" id="btn-next" onclick="nextSection()" disabled>
+        다음
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Result -->
+  <div class="screen" id="screen-result">
+    <div class="result-hero">
+      <div class="result-stage" id="res-stage"></div>
+      <div class="result-character" id="res-char"></div>
+      <div class="result-en" id="res-char-en"></div>
+      <div class="score-display">
+        <span class="score-number" id="res-score"></span>
+        <span class="score-max">/ 100점</span>
+      </div>
+    </div>
+
+    <p class="result-desc" id="res-desc"></p>
+
+    <div class="score-range">
+      <div class="score-range-label">전체 점수 위치</div>
+      <div class="range-bar">
+        <div class="range-segments">
+          <div class="range-seg s1" id="seg1"></div>
+          <div class="range-seg s2" id="seg2"></div>
+          <div class="range-seg s3" id="seg3"></div>
+          <div class="range-seg s4" id="seg4"></div>
+        </div>
+        <div class="range-marker" id="range-marker" style="left:0%"></div>
+      </div>
+      <div class="range-labels">
+        <span>20</span><span>40</span><span>60</span><span>80</span><span>100</span>
+      </div>
+    </div>
+
+    <div class="radar-wrap">
+      <h3>영역별 점수</h3>
+      <div class="radar-svg-wrap">
+        <svg id="radar-svg" width="280" height="280" viewBox="0 0 280 280"></svg>
+      </div>
+    </div>
+
+    <div class="area-breakdown">
+      <h3>영역별 상세</h3>
+      <div id="area-rows"></div>
+    </div>
+
+    <div class="stages-grid" id="stages-grid"></div>
+
+    <div class="result-actions">
+      <button class="btn-outline" onclick="restartDiag()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M3 12a9 9 0 109-9M3 3v6h6"/>
+        </svg>
+        다시 진단하기
+      </button>
+      <button class="btn-primary" onclick="window.print()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
+        </svg>
+        결과 저장
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const AREAS = [
+  {
+    key: 'A', name: 'AI 수용 마인드셋', color: '#0f172a',
+    questions: [
+      'A1. 나는 AI가 내 업무 방식을 바꿀 수 있다는 사실을 인정하고, 그 변화를 긍정적으로 받아들인다.',
+      'A2. 나는 AI를 내 역할을 대체하는 위협이 아니라, 나의 역량을 확장해 주는 도구로 인식한다.',
+      'A3. 나는 AI 관련 새로운 정보나 변화에 꾸준히 관심을 갖고 스스로 찾아 학습한다.',
+      'A4. 나는 AI 활용 중 시행착오가 생겨도 이를 학습의 기회로 여기고 포기하지 않는다.',
+      'A5. 나는 AI의 가능성과 한계를 균형 있게 인식하며, 맹목적으로 의존하거나 무조건 거부하지 않는다.',
+    ]
+  },
+  {
+    key: 'B', name: 'AI 활용 실행 역량', color: '#334155',
+    questions: [
+      'B1. 나는 내 업무 중 AI를 활용하면 효율이나 품질이 높아질 수 있는 영역을 스스로 찾아 적용한다.',
+      'B2. 나는 AI 도구에 적절한 지시를 입력하고, 결과물이 목적에 맞는지 판단하여 활용한다.',
+      'B3. 나는 AI가 생성한 결과물을 검토한 후 활용하며, 오류·편향·부적절한 내용을 걸러낸다.',
+      'B4. 나는 더 나은 AI 활용 방법을 찾기 위해 다양한 방식을 시도하고 반복적으로 개선한다.',
+      'B5. 나는 AI 사용이 적절하지 않은 상황을 스스로 판단하여 사용 여부를 결정한다.',
+    ]
+  },
+  {
+    key: 'C', name: '팀 전환 촉진 리더십', color: '#64748b',
+    questions: [
+      'C1. 나는 팀원들에게 AI 전환이 왜 필요한지 맥락과 방향을 명확히 설명하고 공유한다.',
+      'C2. 나는 팀원이 AI 도구를 처음 시도하다 실패하더라도 비난하지 않고 격려한다.',
+      'C3. 나는 팀 안에서 AI 활용 경험과 노하우를 함께 나누는 기회를 만들고 촉진한다.',
+      'C4. 나는 팀원의 AI 역량 수준 차이를 파악하고, 수준에 맞는 학습 기회나 지원을 제공한다.',
+      'C5. 나는 AI 전환에 대한 팀원의 불안이나 저항을 충분히 듣고, 함께 해결책을 찾는다.',
+    ]
+  },
+  {
+    key: 'D', name: 'AX 기반 성과 창출', color: '#94a3b8',
+    questions: [
+      'D1. 나는 AI 활용의 목표를 팀의 핵심 성과 목표와 연결하여 설정한다.',
+      'D2. 나는 AI를 활용하여 기존 방식으로는 시도하기 어려웠던 새로운 업무 방식을 팀과 함께 실험한다.',
+      'D3. 나는 AI 활용의 성과를 구체적인 수치나 변화로 확인하고 팀 내에서 공유한다.',
+      'D4. 나는 AI 활용이 팀원 개인 수준에 머물지 않고, 팀 전체의 협업 방식과 업무 흐름에 녹아들도록 이끈다.',
+      'D5. 나는 AI 활용 과정에서 발생할 수 있는 윤리적 문제를 인식하고 팀 차원의 기준을 마련한다.',
+    ]
+  }
+];
+
+const STAGES = [
+  { stage: 1, min: 20, max: 39, name: '관찰자', en: 'The Watcher',
+    desc: 'AI 전환의 흐름을 멀리서 지켜보는 중. 아직 내 일과 연결짓지 못하고, 변화의 파도가 오기를 기다립니다.' },
+  { stage: 2, min: 40, max: 59, name: '탐험가', en: 'The Explorer',
+    desc: '지도 없이 새 땅을 걷기 시작한 리더. 직접 써보고 부딪히지만, 팀 전체를 이끄는 나침반은 아직 없습니다.' },
+  { stage: 3, min: 60, max: 79, name: '건축가', en: 'The Architect',
+    desc: '팀의 AI 활용 방식을 설계하고 실행하는 리더. 성과와 연결하고, 팀이 함께 움직이는 구조를 만들고 있습니다.' },
+  { stage: 4, min: 80, max: 100, name: '항해사', en: 'The Navigator',
+    desc: '불확실한 AI 전환의 바다에서 팀의 방향을 잡는 리더. 기술·사람·성과·윤리를 통합하며 항로를 개척합니다.' }
+];
+
+const LABELS = ['전혀\n그렇지않다', '그렇지\n않다', '보통이다', '그렇다', '매우\n그렇다'];
+
+let answers = {};
+let currentSection = 0;
+
+function startDiag() {
+  answers = {};
+  currentSection = 0;
+  showScreen('quiz');
+  renderSection();
+}
+
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderSection() {
+  const area = AREAS[currentSection];
+  const totalAnswered = Object.keys(answers).length;
+
+  document.getElementById('prog-label').textContent = `영역 ${area.key} · ${area.name}`;
+  document.getElementById('prog-count').textContent = `${totalAnswered} / 20`;
+  document.getElementById('prog-fill').style.width = `${(totalAnswered / 20) * 100}%`;
+
+  // Tabs
+  document.getElementById('area-tabs').innerHTML = AREAS.map((a, i) => {
+    const done = a.questions.every((_, qi) => answers[`${a.key}${qi}`] != null);
+    const active = i === currentSection;
+    let cls = 'area-tab';
+    if (active) cls += ` active ${a.key}`;
+    else if (done) cls += ' done';
+    return `<div class="${cls}"><span class="dot"></span>영역 ${a.key}</div>`;
+  }).join('');
+
+  // Questions
+  const container = document.getElementById('questions-container');
+  container.innerHTML = '';
+
+  area.questions.forEach((q, qi) => {
+    const key = `${area.key}${qi}`;
+    const val = answers[key];
+
+    const card = document.createElement('div');
+    card.className = 'question-card' + (val != null ? ' answered' : '');
+    card.innerHTML = `
+      <div class="question-num">Q${currentSection * 5 + qi + 1}.</div>
+      <div class="question-text">${q.replace(/^[A-D]\d+\.\s*/, '')}</div>
+      <div class="rating-row">
+        ${[1,2,3,4,5].map(n => `
+          <button class="rating-btn${val === n ? ' selected' : ''}"
+            onclick="setAnswer('${key}', ${n}, this)"
+            data-val="${n}">
+            <span class="rating-num">${n}</span>
+            <span class="rating-label">${LABELS[n-1].replace('\n', '<br>')}</span>
+          </button>
+        `).join('')}
+      </div>
+      <div class="rating-guide"><span>전혀 그렇지 않다</span><span>매우 그렇다</span></div>
+    `;
+    container.appendChild(card);
+  });
+
+  document.getElementById('btn-prev').disabled = currentSection === 0;
+  updateNextBtn();
+}
+
+function setAnswer(key, val, btn) {
+  answers[key] = val;
+
+  const card = btn.closest('.question-card');
+  card.classList.add('answered');
+  card.querySelectorAll('.rating-btn').forEach(b => {
+    b.classList.toggle('selected', parseInt(b.dataset.val) === val);
+  });
+
+  const totalAnswered = Object.keys(answers).length;
+  document.getElementById('prog-count').textContent = `${totalAnswered} / 20`;
+  document.getElementById('prog-fill').style.width = `${(totalAnswered / 20) * 100}%`;
+
+  updateNextBtn();
+}
+
+function updateNextBtn() {
+  const area = AREAS[currentSection];
+  const sectionAnswered = area.questions.filter((_, qi) => answers[`${area.key}${qi}`] != null).length;
+  const allDone = sectionAnswered === area.questions.length;
+  const btn = document.getElementById('btn-next');
+  const remaining = area.questions.length - sectionAnswered;
+
+  btn.disabled = !allDone;
+  document.getElementById('answer-hint').textContent = allDone ? '' : `${remaining}개 문항 미응답`;
+
+  if (allDone) {
+    const isLast = currentSection === 3;
+    btn.innerHTML = isLast
+      ? `결과 보기 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>`
+      : `다음 영역 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>`;
+  }
+}
+
+function nextSection() {
+  if (currentSection < 3) {
+    currentSection++;
+    renderSection();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    showResult();
+  }
+}
+
+function prevSection() {
+  if (currentSection > 0) {
+    currentSection--;
+    renderSection();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+function showResult() {
+  showScreen('result');
+
+  const areaScores = AREAS.map(area =>
+    area.questions.reduce((sum, _, qi) => sum + (answers[`${area.key}${qi}`] || 0), 0)
+  );
+  const total = areaScores.reduce((a, b) => a + b, 0);
+  const stage = STAGES.find(s => total >= s.min && total <= s.max) || STAGES[3];
+
+  document.getElementById('res-stage').textContent = `${stage.stage}단계`;
+  document.getElementById('res-char').textContent = stage.name;
+  document.getElementById('res-char-en').textContent = stage.en;
+  document.getElementById('res-score').textContent = total;
+  document.getElementById('res-desc').textContent = stage.desc;
+
+  // Marker position: 20=0%, 100=100%
+  const pct = ((total - 20) / 80) * 100;
+  setTimeout(() => {
+    document.getElementById('range-marker').style.left = `${pct}%`;
+    for (let i = 1; i <= 4; i++) {
+      document.getElementById(`seg${i}`).classList.toggle('active', i === stage.stage);
+    }
+  }, 300);
+
+  drawRadar(areaScores);
+
+  // Area bars
+  document.getElementById('area-rows').innerHTML = AREAS.map((area, i) => `
+    <div class="area-row">
+      <div class="area-row-header">
+        <span class="area-row-name">영역 ${area.key} · ${area.name}</span>
+        <span class="area-row-score" style="color:${area.color}">${areaScores[i]} / 25</span>
+      </div>
+      <div class="area-bar">
+        <div class="area-bar-fill" id="bar-${area.key}" style="background:${area.color}"></div>
+      </div>
+    </div>
+  `).join('');
+
+  setTimeout(() => {
+    AREAS.forEach((area, i) => {
+      document.getElementById(`bar-${area.key}`).style.width = `${(areaScores[i] / 25) * 100}%`;
+    });
+  }, 400);
+
+  // Stages
+  document.getElementById('stages-grid').innerHTML = STAGES.map(s => `
+    <div class="stage-card ${s.stage === stage.stage ? 'current' : ''}">
+      <div class="stage-num">${s.stage}단계</div>
+      <div class="stage-name">${s.name}</div>
+      <div class="stage-name-en">${s.en}</div>
+      <div class="stage-range">${s.min}~${s.max}점</div>
+    </div>
+  `).join('');
+}
+
+function drawRadar(scores) {
+  const svg = document.getElementById('radar-svg');
+  const cx = 140, cy = 140, r = 100;
+  const n = 4;
+  const angleStep = (Math.PI * 2) / n;
+  const startAngle = -Math.PI / 2;
+  const areaLabels = ['A', 'B', 'C', 'D'];
+  const colors = ['#0f172a', '#334155', '#64748b', '#94a3b8'];
+  const areaNames = ['마인드셋', '실행역량', '팀리더십', '성과창출'];
+
+  function pt(i, ratio) {
+    const a = startAngle + i * angleStep;
+    return { x: cx + r * ratio * Math.cos(a), y: cy + r * ratio * Math.sin(a) };
+  }
+
+  let html = '';
+
+  // Grid
+  [0.25, 0.5, 0.75, 1].forEach(ratio => {
+    const pts = Array.from({ length: n }, (_, i) => pt(i, ratio));
+    html += `<path d="${pts.map((p, i) => `${i===0?'M':'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ')}Z"
+      fill="none" stroke="rgba(0,0,0,0.07)" stroke-width="1"/>`;
+  });
+
+  // Score labels on grid
+  const scoreTicks = [5, 10, 15, 20, 25];
+  scoreTicks.forEach((tick, ti) => {
+    const ratio = tick / 25;
+    const p = pt(0, ratio);
+    html += `<text x="${(p.x + 4).toFixed(1)}" y="${p.y.toFixed(1)}"
+      fill="rgba(0,0,0,0.2)" font-size="9" dominant-baseline="middle">${tick}</text>`;
+  });
+
+  // Axes
+  for (let i = 0; i < n; i++) {
+    const p = pt(i, 1);
+    html += `<line x1="${cx}" y1="${cy}" x2="${p.x.toFixed(1)}" y2="${p.y.toFixed(1)}"
+      stroke="rgba(0,0,0,0.08)" stroke-width="1"/>`;
+  }
+
+  // Data polygon
+  const dataPts = scores.map((s, i) => pt(i, s / 25));
+  html += `<path d="${dataPts.map((p, i) => `${i===0?'M':'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ')}Z"
+    fill="rgba(0,0,0,0.05)" stroke="rgba(0,0,0,0.3)" stroke-width="2"/>`;
+
+  // Dots + score labels
+  dataPts.forEach((p, i) => {
+    html += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="5"
+      fill="${colors[i]}" stroke="#ffffff" stroke-width="2"/>`;
+    const sp = pt(i, scores[i] / 25 + 0.18);
+    html += `<text x="${sp.x.toFixed(1)}" y="${sp.y.toFixed(1)}"
+      text-anchor="middle" dominant-baseline="middle"
+      fill="rgba(0,0,0,0.55)" font-size="11" font-weight="700">${scores[i]}</text>`;
+  });
+
+  // Axis labels
+  for (let i = 0; i < n; i++) {
+    const lp = pt(i, 1.28);
+    html += `
+      <text x="${lp.x.toFixed(1)}" y="${(lp.y - 6).toFixed(1)}"
+        text-anchor="middle" fill="${colors[i]}" font-size="14" font-weight="800">${areaLabels[i]}</text>
+      <text x="${lp.x.toFixed(1)}" y="${(lp.y + 8).toFixed(1)}"
+        text-anchor="middle" fill="rgba(0,0,0,0.3)" font-size="9">${areaNames[i]}</text>
+    `;
+  }
+
+  svg.innerHTML = html;
+}
+
+function restartDiag() {
+  answers = {};
+  currentSection = 0;
+  showScreen('intro');
+}
+</script>
+</body>
+</html>
